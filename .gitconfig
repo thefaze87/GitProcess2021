@@ -1,0 +1,119 @@
+[core]
+	editor = code --wait
+	autocrlf = true
+
+[user]
+	name = Mark Fasel
+	email = mark.fasel@scorpion.co
+
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+
+[color "branch"]
+    current = red reverse
+    local = blue
+    remote = green
+
+[color "diff"]
+    meta = yellow
+    frag = magenta
+    old = red bold
+    new = green
+    plain = white
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[alias]
+	# General commands {{{
+		aliases = config --get-regexp alias
+		aa = add --all
+		b = branch
+		ba = branch -ra
+		bd = branch -d
+		bv = branch -vv
+		ca = commit --ammend
+		cb = checkout -b
+		ci = commit #standard commit
+		cl = clone
+		cm = commit -a --ammend -C HEAD
+		co = checkout
+		gc = commit -m $2
+		gp = push
+		gpo = push origin
+		gpl = pull
+		gplo = pull origin
+		st = status --short --branch
+		unstage = reset HEAD -- # Might be easier to remember
+	# }}}
+	
+	# Log commands {{{
+		last = log -1 HEAD # Shows the last commit
+		lg1 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) -%C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)—%an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+		lg2 = log --graph --all --format=format:'%C(bold blue)%h%C(reset) -%C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n'' %C(white)%s%C(reset) %C(bold white)—%an%C(reset)' --abbrev-commit
+		lg = !"git lg1"
+		ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate --date=relative
+		ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [a:%an,c:%cn]" --decorate --numstat
+		lc  = "!f() { git ll "$1"^.."$1"; }; f"
+		lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+		lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+		ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+		le = log --oneline --decorate
+		fl = log -u
+		filelog = log -u
+		lol = log --graph --decorate --pretty=oneline --abbrev-commit --all # A more concise log output
+		hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+    # }}}
+	
+	# Advanced commands {{{
+		up = !git fetch origin && git rebase origin/master # Catches your branch up with origin master
+		dlc = diff --cached HEAD^ #Show a diff last commit
+		dl = "!git ll -1" #Show modified files in last commit
+		please = push --force-with-lease
+		nb = '!sh -c \"git checkout -b $1;\" -' #simple new branch and checkout
+		nbp = "!f() { branchName=$1; git co -b \"faze/${branchName}\"; git push --set-upstream origin \"faze/${branchName}\"; }; f"
+		nbo = '!sh -c \"git checkout $1;\" -' #simple new branch only
+		newb = "!f() { branchName=$1; git co -b \"faze/${branchName}\"; }; f"
+		newbtb = "!f() { topicBrancName=$1; branchName=$2; git co -b \"faze/${topicBrancName}/${branchName}\"; }; f"
+		count = "!f() { compareBranch=${1-master}; git rev-list --count HEAD ^$compareBranch; }; f"
+		pullbase = "!f() { branchName=${1-master}; git co $branchName && git pull && git co - && git rebase -i $branchName; }; f"
+		squashbase = "!f() { branchName=${1-master}; commitCount=$(git count $branchName); git rebase -i HEAD~$commitCount; }; f"
+		catchup = "!f() { branchName=${1-master}; git co $branchName && git pull && git co - && git rebase $branchName; }; f"
+		mergeme = "!f() { branchName=${1-master}; git co $branchName && git merge - && git push origin $branchName; }; f"
+		prune = git remote prune origin
+		gi = '!sh -c \"git init && git commit -am "Init Commit"\" -'
+		ac = "!f() { flag=$1; msg=$2; git add -A && git commit $flag \"${msg}\"; }; f"
+		gcm1 = "!f() { flag=$1; msg=$2; git commit $flag \"${msg}\"; }; f"
+		rm='rm -iv'
+		cleanwhat = git clean -n #git clean -n - check what will be deleted
+		clean = "!f() { cleanType=$1; git clean -f\"{cleanType}\"; }; f" #git clean -f{d|x|X}: deletes files, dirs, ignored or non-ignored files
+	# }}}
+
+	r = reset
+	r1 = reset HEAD^
+	r2 = reset HEAD^^
+	rh = reset --hard
+	rh1 = reset HEAD^ --hard
+	rh2 = reset HEAD^^ --hard
+	cp = cherry-pick
+	diff = diff --word-diff
+	dc = diff --cached
+	sl = stash list
+	sa = stash apply
+	ss = stash save
+	lasttag = describe --tags --abbrev=0
+	done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
+	la = "!git config -l | grep alias | cut -c 7-"
+	f = "!git ls-files | grep -i" #Find a file path in codebase: git f trenches
+	grep = grep -Ii #Search/grep your entire codebase for a string: git gr trenches
+	git = !git
+
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
