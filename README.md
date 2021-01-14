@@ -26,12 +26,15 @@ Here's the repo with the details: https://github.com/lextm/windowsterminal-shell
 
 ## Bash Profile
 Download the `.bash_profile` and install in your `C:\Users\[user]`
+Update any command that has "faze" to your branch nameing scheme.
 
 ## Gitignore
 Download the `.gitignore` and install in your `C:\Users\[user]`
 
 ## Inputrc (fixes flicker issue with Windows Terminal)
 Download the `.inputrc` and install in your `C:\Users\[user]`
+
+_Note: I will be pushing updates here with changes to the files as I add or remove aliases, fix any issues, etc. Feel free to fork and or watch / star._
 
 
 # Additional Resources
